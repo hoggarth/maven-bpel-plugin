@@ -130,6 +130,11 @@
 			<version>1.1</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.wso2.maven</groupId>
+			<artifactId>org.wso2.maven.capp</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 	</dependencies>
 
 	<profiles>
