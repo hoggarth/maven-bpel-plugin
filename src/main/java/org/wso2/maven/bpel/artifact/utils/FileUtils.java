@@ -112,7 +112,7 @@ public class FileUtils {
 
 		File targetFolder = null;
 		try {
-
+//TODO: Bug is here
 			targetFolder = new File(location.getPath() , "target");
 			File bpelDataFolder=new File(targetFolder,"bpel-tmp");
 			bpelDataFolder.mkdirs();
@@ -150,14 +150,18 @@ public class FileUtils {
 			if (!file.isDirectory()) {
 				try {
 					if ((file.getName().toLowerCase().endsWith(".bpel")) &&
-					    (isValidBPelFile(file, requiredWsdl)))
+					    (isValidBPelFile(file, requiredWsdl))){
 						list.add(file);
-					else if ((file.getName().toLowerCase().endsWith(".wsdl")) &&
-					         (isValidWSDLFile(file)))
+					}else if ((file.getName().toLowerCase().endsWith(".wsdl")) &&
+					         (isValidWSDLFile(file))){
 						existingWSDL.add(file);
-					else if ((file.getName().toLowerCase().endsWith(".xml")) &&
-					         (isValidDeployFile(file)))
+					}else if ((file.getName().toLowerCase().endsWith(".xml")) &&
+					         (isValidDeployFile(file))){
 						list.add(file);
+						//XXX: Fixed to export XSD files in the location.
+					}else if(file.getName().toLowerCase().endsWith(".xsd") && isValidXSDFile(file)){
+						list.add(file);
+					}
 				} catch (IOException e) {
 				}
 			}
@@ -188,6 +192,10 @@ public class FileUtils {
 
 	public static boolean isValidWSDLFile(File file) {
 		return true;
+	}
+	
+	public static boolean isValidXSDFile(File fileName){
+		return getXmlDocument(fileName)!= null?true:false;
 	}
 
 	public static boolean isValidBPelFile(File file, List<File> wsdlList) throws IOException {
