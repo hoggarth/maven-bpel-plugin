@@ -112,7 +112,6 @@ public class FileUtils {
 
 		File targetFolder = null;
 		try {
-//TODO: Bug is here
 			targetFolder = new File(location.getPath() , "target");
 			File bpelDataFolder=new File(targetFolder,"bpel-tmp");
 			bpelDataFolder.mkdirs();
@@ -240,24 +239,39 @@ public class FileUtils {
 	public static void copyDirectory(File srcPath, File dstPath, List<File> filesToBeCopied)
 	                                                                                  throws IOException {
 		List<String> pathStringList = getToStringList(filesToBeCopied);
-		if (srcPath.isDirectory()) {
-			if (!dstPath.exists()) {
-				dstPath.mkdir();
-			}
-			String files[] = srcPath.list();
-			for (int i = 0; i < files.length; i++) {
-				copyDirectory(new File(srcPath, files[i]), new File(dstPath, files[i]),
-				              filesToBeCopied);
-			}
-		} else {
-			if (!pathStringList.contains(srcPath.getAbsolutePath()))
-				return;
-			if (!srcPath.exists()) {
-				return;
-			} else {
-				copy(srcPath, dstPath);
-			}
-		}
+		
+		
+		for (String string : pathStringList) {
+	        String path=string.substring(srcPath.getPath().length()+1);
+	        File destFile=new File(dstPath,path);
+	        destFile.getParentFile().mkdirs();
+	        copy(new File(string), destFile);
+        }
+		
+		
+		
+//		for (String string : pathStringList) {
+//	        System.out.println("Path String: "+string );
+//        }
+//		
+//		if (srcPath.isDirectory()) {
+//			if (!dstPath.exists()) {
+//				dstPath.mkdir();
+//			}
+//			String files[] = srcPath.list();
+//			for (int i = 0; i < files.length; i++) {
+//				copyDirectory(new File(srcPath, files[i]), new File(dstPath, files[i]),
+//				              filesToBeCopied);
+//			}
+//		} else {
+//			if (!pathStringList.contains(srcPath.getAbsolutePath()))
+//				return;
+//			if (!srcPath.exists()) {
+//				return;
+//			} else {
+//				copy(srcPath, dstPath);
+//			}
+//		}
 	}
 
 	public static List<File> getAllFilesPresentInFolder(File srcPath) {
