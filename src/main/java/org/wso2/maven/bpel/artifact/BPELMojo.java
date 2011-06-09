@@ -48,7 +48,11 @@ public class BPELMojo extends AbstractMojo {
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		File project = path;
-		createZip(project);
+		try {
+	        createZip(project);
+        } catch (Exception e) {
+	        e.printStackTrace();
+        }
 	}
 
 	public void createZip(File project) throws MojoExecutionException {

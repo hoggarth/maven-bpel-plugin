@@ -27,6 +27,7 @@ import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.model.Plugin;
+import org.apache.maven.model.PluginExecution;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
@@ -38,6 +39,7 @@ import org.wso2.maven.capp.model.Artifact;
 import org.wso2.maven.capp.model.BundlesDataInfo;
 import org.wso2.maven.capp.mojo.AbstractPOMGenMojo;
 import org.wso2.maven.capp.utils.CAppMavenUtils;
+import org.wso2.maven.capp.utils.WSO2MavenPluginConstantants;
 
 /**
  * This is the Maven Mojo used for generating a pom for a BPEL artifact from the
@@ -158,6 +160,41 @@ public class BPELPOMGenMojo extends AbstractBundlePOMGenMojo {
 	}
 
 	protected void addPlugins(MavenProject artifactMavenProject, Artifact artifact) {
+		Plugin pluginAxis2 =
+		                     CAppMavenUtils.createPluginEntry(artifactMavenProject,
+		                                                      "org.wso2.maven",
+		                                                      "maven-bpel-plugin",
+		                                                      WSO2MavenPluginConstantants.MAVEN_BPEL_PLUGIN_VERSION,
+		                                                      true);
+		PluginExecution executionAxis2 = new PluginExecution();
+		executionAxis2.setId("package-bpel");
+		executionAxis2.setPhase("package");
+		List goalsAxis2 = new ArrayList<String>();
+		goalsAxis2.add("package-bpel");
+		executionAxis2.setGoals(goalsAxis2);
+		pluginAxis2.addExecution(executionAxis2);
+
+		Xpp3Dom config = (Xpp3Dom) pluginAxis2.getConfiguration();
+		Xpp3Dom artifactItems = CAppMavenUtils.createConfigurationNode(config, "artifact");
+		String relativePath =
+		                      org.wso2.carbonstudio.eclipse.utils.file.FileUtils.getRelativePath(new File(
+		                                                                                                  artifact.getFile()
+		                                                                                                          .getParentFile()
+		                                                                                                          .getParentFile()
+		                                                                                                          .getParentFile()
+		                                                                                                          .getParentFile()
+		                                                                                                          .getParentFile()
+		                                                                                                          .getPath() +
+		                                                                                                          File.separator +
+		                                                                                                          "target" +
+		                                                                                                          File.separator +
+		                                                                                                          "capp" +
+		                                                                                                          File.separator +
+		                                                                                                          "artifacts" +
+		                                                                                                          File.separator +
+		                                                                                                          artifactMavenProject.getArtifactId()),
+		                                                                                         artifact.getFile());
+		artifactItems.setValue(relativePath);
 	}
 
 	protected BundlesDataInfo getBundlesDataInfo(File targetProjectLocation, Artifact artifact)
@@ -189,9 +226,28 @@ public class BPELPOMGenMojo extends AbstractBundlePOMGenMojo {
 		}
 		return artifactProjects;
 	}
-
-	public void execute() throws MojoExecutionException, MojoFailureException {
-		// Nothing to do. No need to generate a pom.
+//
+//	public void execute() throws MojoExecutionException, MojoFailureException {
+//		// Nothing to do. No need to generate a pom.
+//	}
+	
+	protected MavenProject createMavenProjectForCappArtifact(Artifact artifact,
+	                                                         List<Artifact> artifacts,
+	                                                         File projectLocation)
+	                                                                              throws MojoExecutionException {
+		if (artifact.getFile().getPath().endsWith(".zip")) {
+	        MavenProject artifactMavenProject =
+	                                            CAppMavenUtils.createMavenProject(artifact,
+	                                                                              getGroupId(),
+	                                                                              getArtifactType());
+	        addDependencies(artifactMavenProject, artifact, projectLocation);
+	        // Adding & configuring the plugin section
+	        addPlugins(artifactMavenProject, artifact);
+	        addMavenDependencies(artifactMavenProject, artifact, artifacts);
+	        return artifactMavenProject;
+        }else{
+        	return null;
+        }
 	}
 
 }
