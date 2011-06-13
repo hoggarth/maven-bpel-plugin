@@ -176,24 +176,25 @@ public class BPELPOMGenMojo extends AbstractBundlePOMGenMojo {
 
 		Xpp3Dom config = (Xpp3Dom) pluginAxis2.getConfiguration();
 		Xpp3Dom artifactItems = CAppMavenUtils.createConfigurationNode(config, "artifact");
-		String relativePath =
-		                      org.wso2.carbonstudio.eclipse.utils.file.FileUtils.getRelativePath(new File(
-		                                                                                                  artifact.getFile()
-		                                                                                                          .getParentFile()
-		                                                                                                          .getParentFile()
-		                                                                                                          .getParentFile()
-		                                                                                                          .getParentFile()
-		                                                                                                          .getParentFile()
-		                                                                                                          .getPath() +
-		                                                                                                          File.separator +
-		                                                                                                          "target" +
-		                                                                                                          File.separator +
-		                                                                                                          "capp" +
-		                                                                                                          File.separator +
-		                                                                                                          "artifacts" +
-		                                                                                                          File.separator +
-		                                                                                                          artifactMavenProject.getArtifactId()),
-		                                                                                         artifact.getFile());
+//		String relativePath =
+//		                      org.wso2.carbonstudio.eclipse.utils.file.FileUtils.getRelativePath(new File(
+//		                                                                                                  artifact.getFile()
+//		                                                                                                          .getParentFile()
+//		                                                                                                          .getParentFile()
+//		                                                                                                          .getParentFile()
+//		                                                                                                          .getParentFile()
+//		                                                                                                          .getParentFile()
+//		                                                                                                          .getPath() +
+//		                                                                                                          File.separator +
+//		                                                                                                          "target" +
+//		                                                                                                          File.separator +
+//		                                                                                                          "capp" +
+//		                                                                                                          File.separator +
+//		                                                                                                          "artifacts" +
+//		                                                                                                          File.separator +
+//		                                                                                                          artifactMavenProject.getArtifactId()),
+//		                                                                                         artifact.getFile());
+		String relativePath=artifact.getFile().getName();
 		artifactItems.setValue(relativePath);
 	}
 
@@ -248,6 +249,15 @@ public class BPELPOMGenMojo extends AbstractBundlePOMGenMojo {
         }else{
         	return null;
         }
+	}
+	
+	protected void copyResources(MavenProject project, File projectLocation,
+	                 			Artifact artifact) throws IOException {
+		super.copyResources(project, projectLocation, artifact);
+    	File bpelFileOriginal=artifact.getFile();
+    	File bpelFileDest=new File(projectLocation+File.separator+bpelFileOriginal.getName());
+    	
+    	FileUtils.copyFile(bpelFileOriginal, bpelFileDest);
 	}
 
 }
