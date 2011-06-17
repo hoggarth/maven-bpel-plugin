@@ -329,7 +329,7 @@ public class FileUtils {
 			int len;
 			try {
 				FileInputStream in = new FileInputStream(srcFile);
-				zip.putNextEntry(new ZipEntry(path + "/" + folder.getName()));
+				zip.putNextEntry(new ZipEntry(path + File.separator + folder.getName()));
 				while ((len = in.read(buf)) > 0) {
 					zip.write(buf, 0, len);
 				}
@@ -345,7 +345,7 @@ public class FileUtils {
 		try {
 			int i = 0;
 			while (true) {
-				addToZip("", srcFolder + "/" + fileListe[i], zip);
+				addToZip("", srcFolder + File.separator + fileListe[i], zip);
 				i++;
 			}
 		} catch (Exception ex) {
@@ -360,8 +360,8 @@ public class FileUtils {
 			while (true) {
 				String newPath = folder.getName();
 				if (!path.equalsIgnoreCase(""))
-					newPath = path + "/" + newPath;
-				addToZip(newPath, srcFolder + "/" + fileListe[i], zip);
+					newPath = path + File.separator + newPath;
+				addToZip(newPath, srcFolder + File.separator + fileListe[i], zip);
 				i++;
 			}
 		} catch (Exception ex) {
