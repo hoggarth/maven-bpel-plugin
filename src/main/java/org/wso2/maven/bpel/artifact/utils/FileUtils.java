@@ -344,7 +344,7 @@ public class FileUtils {
 		String fileListe[] = folder.list();
 		try {
 			int i = 0;
-			while (true) {
+			while (i<=fileListe.length) {
 				addToZip("", srcFolder + File.separator + fileListe[i], zip);
 				i++;
 			}
@@ -357,7 +357,7 @@ public class FileUtils {
 		String fileListe[] = folder.list();
 		try {
 			int i = 0;
-			while (true) {
+			while (i <= fileListe.length) {
 				String newPath = folder.getName();
 				if (!path.equalsIgnoreCase(""))
 					newPath = path + File.separator + newPath;
