@@ -329,7 +329,11 @@ public class FileUtils {
 			int len;
 			try {
 				FileInputStream in = new FileInputStream(srcFile);
-				zip.putNextEntry(new ZipEntry(path + File.separator + folder.getName()));
+				String nextEntryPath = path + File.separator + folder.getName();
+				if (path != null && path.trim().equalsIgnoreCase("")) {
+					nextEntryPath = folder.getName();
+				}
+				zip.putNextEntry(new ZipEntry(nextEntryPath));
 				while ((len = in.read(buf)) > 0) {
 					zip.write(buf, 0, len);
 				}
