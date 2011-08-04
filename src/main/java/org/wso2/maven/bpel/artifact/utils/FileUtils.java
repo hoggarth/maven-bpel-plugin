@@ -160,6 +160,8 @@ public class FileUtils {
 						//XXX: Fixed to export XSD files in the location.
 					}else if(file.getName().toLowerCase().endsWith(".xsd") && isValidXSDFile(file)){
 						list.add(file);
+					}else if(file.getName().toLowerCase().endsWith(".xslt") && isValidXSLTFile(file)){
+						list.add(file);
 					}
 				} catch (IOException e) {
 				}
@@ -194,6 +196,10 @@ public class FileUtils {
 	}
 	
 	public static boolean isValidXSDFile(File fileName){
+		return getXmlDocument(fileName)!= null?true:false;
+	}
+	
+	public static boolean isValidXSLTFile(File fileName){
 		return getXmlDocument(fileName)!= null?true:false;
 	}
 
