@@ -121,6 +121,7 @@ public class FileUtils {
 			removeEmptyDirectories(zipFolder);
 			File zipFile = new File(targetFolder,artifactName);
 			zipFolder(zipFolder.getAbsolutePath(), zipFile.toString());
+			org.wso2.carbonstudio.eclipse.utils.file.FileUtils.deleteDir(bpelDataFolder);
 			return zipFile;
 		} catch (Exception e) {
 			throw e;
@@ -145,6 +146,15 @@ public class FileUtils {
 		List<File> list = new ArrayList<File>();
 		List<File> existingWSDL = new ArrayList<File>();
 		List<File> requiredWsdl = new ArrayList<File>();
+		List<String> excludeList=new ArrayList<String>();
+		excludeList.add("pom.xml");
+		excludeList.add("build.xml");
+		excludeList.add(".project");
+		excludeList.add(".classpath");
+		excludeList.add(".svn");
+		excludeList.add("target");
+		excludeList.add(".settings");
+		
 		for (File file : fileList) {
 			if (!file.isDirectory()) {
 				try {
@@ -154,14 +164,8 @@ public class FileUtils {
 					}else if ((file.getName().toLowerCase().endsWith(".wsdl")) &&
 					         (isValidWSDLFile(file))){
 						existingWSDL.add(file);
-					}else if ((file.getName().toLowerCase().endsWith(".xml")) &&
-					         (isValidDeployFile(file))){
-						list.add(file);
-						//XXX: Fixed to export XSD files in the location.
-					}else if(file.getName().toLowerCase().endsWith(".xsd") && isValidXSDFile(file)){
-						list.add(file);
-					}else if(file.getName().toLowerCase().endsWith(".xslt") && isValidXSLTFile(file)){
-						list.add(file);
+					}else if (!excludeList.contains(file.getName()) && !excludeList.contains(file.getParentFile().getName())) {
+	                	list.add(file);
 					}
 				} catch (IOException e) {
 				}
